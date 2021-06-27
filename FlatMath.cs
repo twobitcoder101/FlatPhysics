@@ -1,0 +1,38 @@
+﻿using System;
+
+namespace FlatPhysics
+{
+    public static class FlatMath
+    {
+        public static float Length(FlatVector v)
+        {
+            return MathF.Sqrt(v.X * v.X + v.Y * v.Y);
+        }
+
+        public static float Distance(FlatVector a, FlatVector b)
+        {
+            float dx = a.X - b.X;
+            float dy = a.Y - b.Y;
+            return MathF.Sqrt(dx * dx + dy * dy);
+        }
+
+        public static FlatVector Normalize(FlatVector v)
+        {
+            float len = FlatMath.Length(v);
+            return new FlatVector(v.X / len, v.Y / len);
+        }
+
+        public static float Dot(FlatVector a, FlatVector b)
+        {
+            // a · b = ax × bx + ay × by
+            return a.X * b.X + a.Y * b.Y;
+        }
+
+        public static float Cross(FlatVector a, FlatVector b)
+        {
+            // cz = axby − aybx
+            return a.X * b.Y - a.Y * b.X;
+        }
+
+    }
+}
