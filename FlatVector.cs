@@ -40,7 +40,7 @@ namespace FlatPhysics
             return new FlatVector(v.X / s, v.Y / s);
         }
 
-        public bool Equal(FlatVector other)
+        public bool Equals(FlatVector other)
         {
             return this.X == other.X && this.Y == other.Y;
         }
@@ -49,7 +49,7 @@ namespace FlatPhysics
         {
             if (obj is FlatVector other)
             {
-                return this.Equal(other);
+                return this.Equals(other);
             }
 
             return false;
