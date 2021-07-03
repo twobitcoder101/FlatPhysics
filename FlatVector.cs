@@ -40,6 +40,13 @@ namespace FlatPhysics
             return new FlatVector(v.X / s, v.Y / s);
         }
 
+        internal static FlatVector Transform(FlatVector v, FlatTransform transform)
+        {
+            return new FlatVector(
+                transform.Cos * v.X - transform.Sin * v.Y + transform.PositionX, 
+                transform.Sin * v.X + transform.Cos * v.Y + transform.PositionY);
+        }
+
         public bool Equals(FlatVector other)
         {
             return this.X == other.X && this.Y == other.Y;

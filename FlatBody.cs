@@ -26,6 +26,12 @@ namespace FlatPhysics
         public readonly float Width;
         public readonly float Height;
 
+        private readonly FlatVector[] vertices;
+        public readonly int[] Triangles;
+        private FlatVector[] transformedVertices;
+
+        private bool transformUpdateRequired;
+
         public readonly ShapeType ShapeType;
 
         public FlatVector Position
@@ -51,16 +57,83 @@ namespace FlatPhysics
             this.Width = width;
             this.Height = height;
             this.ShapeType = shapeType;
+
+            if(this.ShapeType is ShapeType.Box)
+            {
+                this.vertices = FlatBody.CreateBoxVertices(this.Width, this.Height);
+                this.Triangles = FlatBody.CreateBoxTriangles();
+                this.transformedVertices = new FlatVector[this.vertices.Length];
+            }
+            else
+            {
+                this.vertices = null;
+                Triangles = null;
+                this.transformedVertices = null;
+            }
+
+            this.transformUpdateRequired = true;
+        }
+
+        private static FlatVector[] CreateBoxVertices(float width, float height)
+        {
+            float left = -width / 2f;
+            float right = left + width;
+            float bottom = -height / 2f;
+            float top = bottom + height;
+
+            FlatVector[] vertices = new FlatVector[4];
+            vertices[0] = new FlatVector(left, top);
+            vertices[1] = new FlatVector(right, top);
+            vertices[2] = new FlatVector(right, bottom);
+            vertices[3] = new FlatVector(left, bottom);
+
+            return vertices;
+        }
+
+        private static int[] CreateBoxTriangles()
+        {
+            int[] triangles = new int[6];
+            triangles[0] = 0;
+            triangles[1] = 1;
+            triangles[2] = 2;
+            triangles[3] = 0;
+            triangles[4] = 2;
+            triangles[5] = 3;
+            return triangles;
+        }
+
+        public FlatVector[] GetTransformedVertices()
+        {
+            if(this.transformUpdateRequired)
+            {
+                FlatTransform transform = new FlatTransform(this.position, this.rotation);
+
+                for(int i = 0; i < this.vertices.Length; i++)
+                {
+                    FlatVector v = this.vertices[i];
+                    this.transformedVertices[i] = FlatVector.Transform(v, transform);
+                }
+            }
+
+            return this.transformedVertices;
         }
 
         public void Move(FlatVector amount)
         {
             this.position += amount;
+            this.transformUpdateRequired = true;
         }
 
         public void MoveTo(FlatVector position)
         {
             this.position = position;
+            this.transformUpdateRequired = true;
+        }
+
+        public void Rotate(float amount)
+        {
+            this.rotation += amount;
+            this.transformUpdateRequired = true;
         }
 
         public static bool CreateCircleBody(float radius, FlatVector position, float density, bool isStatic, float restitution, out FlatBody body, out string errorMessage)
