@@ -115,6 +115,7 @@ namespace FlatPhysics
                 }
             }
 
+            this.transformUpdateRequired = false;
             return this.transformedVertices;
         }
 
