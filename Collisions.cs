@@ -61,7 +61,6 @@ namespace FlatPhysics
                 normal = axis;
             }
 
-
             depth /= FlatMath.Length(normal);
             normal = FlatMath.Normalize(normal);
 
@@ -73,8 +72,6 @@ namespace FlatPhysics
             {
                 normal = -normal;
             }
-
-
 
             return true;
         }
@@ -241,5 +238,6 @@ namespace FlatPhysics
 
             return true;
         }
+
     }
 }

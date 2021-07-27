@@ -15,6 +15,8 @@ namespace FlatPhysics
         private float rotation;
         private float rotationalVelocity;
 
+        private FlatVector force;
+
         public readonly float Density;
         public readonly float Mass;
         public readonly float Restitution;
@@ -39,6 +41,12 @@ namespace FlatPhysics
             get { return this.position; }
         }
 
+        public FlatVector LinearVelocity
+        {
+            get { return this.linearVelocity; }
+            internal set { this.linearVelocity = value; }
+        }
+
         private FlatBody(FlatVector position, float density, float mass, float restitution, float area, 
             bool isStatic, float radius, float width, float height, ShapeType shapeType)
         {
@@ -46,6 +54,8 @@ namespace FlatPhysics
             this.linearVelocity = FlatVector.Zero;
             this.rotation = 0f;
             this.rotationalVelocity = 0f;
+
+            this.force = FlatVector.Zero;
 
             this.Density = density;
             this.Mass = mass;
@@ -121,8 +131,13 @@ namespace FlatPhysics
 
         public void Step(float time)
         {
+            this.linearVelocity += this.force * time;
             this.position += this.linearVelocity * time;
+
             this.rotation += this.rotationalVelocity * time;
+
+            this.force = FlatVector.Zero;
+            this.transformUpdateRequired = true;
         }
 
 
@@ -142,6 +157,11 @@ namespace FlatPhysics
         {
             this.rotation += amount;
             this.transformUpdateRequired = true;
+        }
+
+        public void AddForce(FlatVector amount)
+        {
+            this.force = amount;
         }
 
         public static bool CreateCircleBody(float radius, FlatVector position, float density, bool isStatic, float restitution, out FlatBody body, out string errorMessage)

@@ -69,9 +69,24 @@ namespace FlatPhysics
                     {
                         bodyA.Move(-normal * depth / 2f);
                         bodyB.Move(normal * depth / 2f);
+
+                        this.ResolveCollision(bodyA, bodyB, normal, depth);
                     }
                 }
             }
+        }
+
+        public void ResolveCollision(FlatBody bodyA, FlatBody bodyB, FlatVector normal, float depth)
+        {
+            FlatVector relativeVelocity = bodyB.LinearVelocity - bodyA.LinearVelocity;
+
+            float e = MathF.Min(bodyA.Restitution, bodyB.Restitution);
+
+            float j = -(1f + e) * FlatMath.Dot(relativeVelocity, normal);
+            j /= (1f / bodyA.Mass) + (1f / bodyB.Mass);
+
+            bodyA.LinearVelocity -= j / bodyA.Mass * normal;
+            bodyB.LinearVelocity += j / bodyB.Mass * normal;
         }
 
         public bool Collide(FlatBody bodyA, FlatBody bodyB, out FlatVector normal, out float depth)

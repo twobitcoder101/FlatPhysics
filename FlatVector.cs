@@ -35,6 +35,11 @@ namespace FlatPhysics
             return new FlatVector(v.X * s, v.Y * s);
         }
 
+        public static FlatVector operator *(float s, FlatVector v)
+        {
+            return new FlatVector(v.X * s, v.Y * s);
+        }
+
         public static FlatVector operator /(FlatVector v, float s)
         {
             return new FlatVector(v.X / s, v.Y / s);
