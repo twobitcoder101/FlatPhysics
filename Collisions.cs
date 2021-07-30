@@ -22,6 +22,7 @@ namespace FlatPhysics
 
                 FlatVector edge = vb - va;
                 axis = new FlatVector(-edge.Y, edge.X);
+                axis = FlatMath.Normalize(axis);
 
                 Collisions.ProjectVertices(vertices, axis, out minA, out maxA);
                 Collisions.ProjectCircle(circleCenter, circleRadius, axis, out minB, out maxB);
@@ -44,6 +45,7 @@ namespace FlatPhysics
             FlatVector cp = vertices[cpIndex];
 
             axis = cp - circleCenter;
+            axis = FlatMath.Normalize(axis);
 
             Collisions.ProjectVertices(vertices, axis, out minA, out maxA);
             Collisions.ProjectCircle(circleCenter, circleRadius, axis, out minB, out maxB);
@@ -60,9 +62,6 @@ namespace FlatPhysics
                 depth = axisDepth;
                 normal = axis;
             }
-
-            depth /= FlatMath.Length(normal);
-            normal = FlatMath.Normalize(normal);
 
             FlatVector polygonCenter = Collisions.FindArithmeticMean(vertices);
 
@@ -128,6 +127,7 @@ namespace FlatPhysics
 
                 FlatVector edge = vb - va;
                 FlatVector axis = new FlatVector(-edge.Y, edge.X);
+                axis = FlatMath.Normalize(axis);
 
                 Collisions.ProjectVertices(verticesA, axis, out float minA, out float maxA);
                 Collisions.ProjectVertices(verticesB, axis, out float minB, out float maxB);
@@ -153,6 +153,7 @@ namespace FlatPhysics
 
                 FlatVector edge = vb - va;
                 FlatVector axis = new FlatVector(-edge.Y, edge.X);
+                axis = FlatMath.Normalize(axis);
 
                 Collisions.ProjectVertices(verticesA, axis, out float minA, out float maxA);
                 Collisions.ProjectVertices(verticesB, axis, out float minB, out float maxB);
@@ -170,9 +171,6 @@ namespace FlatPhysics
                     normal = axis;
                 }
             }
-
-            depth /= FlatMath.Length(normal);
-            normal = FlatMath.Normalize(normal);
 
             FlatVector centerA = Collisions.FindArithmeticMean(verticesA);
             FlatVector centerB = Collisions.FindArithmeticMean(verticesB);

@@ -131,7 +131,11 @@ namespace FlatPhysics
 
         public void Step(float time)
         {
-            this.linearVelocity += this.force * time;
+            // force = mass * acc
+            // acc = force / mass;
+
+            FlatVector acceleration = this.force / this.Mass;
+            this.linearVelocity += acceleration * time;
             this.position += this.linearVelocity * time;
 
             this.rotation += this.rotationalVelocity * time;
