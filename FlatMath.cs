@@ -49,13 +49,13 @@ namespace FlatPhysics
 
         public static float Dot(FlatVector a, FlatVector b)
         {
-            // a · b = ax × bx + ay × by
+            // a · b = ax * bx + ay * by
             return a.X * b.X + a.Y * b.Y;
         }
 
         public static float Cross(FlatVector a, FlatVector b)
         {
-            // cz = axby − aybx
+            // cz = ax * by − ay * bx
             return a.X * b.Y - a.Y * b.X;
         }
 

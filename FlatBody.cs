@@ -19,6 +19,7 @@ namespace FlatPhysics
 
         public readonly float Density;
         public readonly float Mass;
+        public readonly float InvMass;
         public readonly float Restitution;
         public readonly float Area;
 
@@ -67,6 +68,15 @@ namespace FlatPhysics
             this.Width = width;
             this.Height = height;
             this.ShapeType = shapeType;
+
+            if(!this.IsStatic)
+            {
+                this.InvMass = 1f / this.Mass;
+            }
+            else
+            {
+                this.InvMass = 0f;
+            }
 
             if(this.ShapeType is ShapeType.Box)
             {
@@ -129,13 +139,22 @@ namespace FlatPhysics
             return this.transformedVertices;
         }
 
-        public void Step(float time)
+        internal void Step(float time, FlatVector gravity)
         {
+
+
             // force = mass * acc
             // acc = force / mass;
 
-            FlatVector acceleration = this.force / this.Mass;
-            this.linearVelocity += acceleration * time;
+            //FlatVector acceleration = this.force / this.Mass;
+            //this.linearVelocity += acceleration * time;
+
+            if(this.IsStatic)
+            {
+                return;
+            }
+
+            this.linearVelocity += gravity * time;
             this.position += this.linearVelocity * time;
 
             this.rotation += this.rotationalVelocity * time;
