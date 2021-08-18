@@ -11,6 +11,9 @@ namespace FlatPhysics
         public static readonly float MinDensity = 0.5f;     // g/cm^3
         public static readonly float MaxDensity = 21.4f;
 
+        public static readonly int MinIterations = 1;
+        public static readonly int MaxIterations = 128;
+
         private FlatVector gravity;
         private List<FlatBody> bodyList;
 
@@ -48,45 +51,50 @@ namespace FlatPhysics
             return true;
         }
 
-        public void Step(float time)
+        public void Step(float time, int iterations)
         {
-            // Movement step
-            for (int i = 0; i < this.bodyList.Count; i++)
-            {
-                this.bodyList[i].Step(time, this.gravity);
-            }
+            iterations = FlatMath.Clamp(iterations, FlatWorld.MinIterations, FlatWorld.MaxIterations);
 
-            // collision step
-            for (int i = 0; i < this.bodyList.Count - 1; i++)
+            for (int it = 0; it < iterations; it++)
             {
-                FlatBody bodyA = this.bodyList[i];
-
-                for (int j = i + 1; j < this.bodyList.Count; j++)
+                // Movement step
+                for (int i = 0; i < this.bodyList.Count; i++)
                 {
-                    FlatBody bodyB = this.bodyList[j];
+                    this.bodyList[i].Step(time, this.gravity, iterations);
+                }
 
-                    if(bodyA.IsStatic && bodyB.IsStatic)
+                // collision step
+                for (int i = 0; i < this.bodyList.Count - 1; i++)
+                {
+                    FlatBody bodyA = this.bodyList[i];
+
+                    for (int j = i + 1; j < this.bodyList.Count; j++)
                     {
-                        continue;
-                    }
+                        FlatBody bodyB = this.bodyList[j];
 
-                    if(this.Collide(bodyA, bodyB, out FlatVector normal, out float depth))
-                    {
-                        if (bodyA.IsStatic)
+                        if (bodyA.IsStatic && bodyB.IsStatic)
                         {
-                            bodyB.Move(normal * depth);
-                        }
-                        else if (bodyB.IsStatic)
-                        {
-                            bodyA.Move(-normal * depth);
-                        }
-                        else
-                        {
-                            bodyA.Move(-normal * depth / 2f);
-                            bodyB.Move(normal * depth / 2f);
+                            continue;
                         }
 
-                        this.ResolveCollision(bodyA, bodyB, normal, depth);
+                        if (this.Collide(bodyA, bodyB, out FlatVector normal, out float depth))
+                        {
+                            if (bodyA.IsStatic)
+                            {
+                                bodyB.Move(normal * depth);
+                            }
+                            else if (bodyB.IsStatic)
+                            {
+                                bodyA.Move(-normal * depth);
+                            }
+                            else
+                            {
+                                bodyA.Move(-normal * depth / 2f);
+                                bodyB.Move(normal * depth / 2f);
+                            }
+
+                            this.ResolveCollision(bodyA, bodyB, normal, depth);
+                        }
                     }
                 }
             }

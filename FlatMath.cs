@@ -29,6 +29,32 @@ namespace FlatPhysics
             return value;
         }
 
+        public static int Clamp(int value, int min, int max)
+        {
+            if (min == max)
+            {
+                return min;
+            }
+
+            if (min > max)
+            {
+                throw new ArgumentOutOfRangeException("min is greater than the max.");
+            }
+
+            if (value < min)
+            {
+                return min;
+            }
+
+            if (value > max)
+            {
+                return max;
+            }
+
+            return value;
+        }
+
+
         public static float Length(FlatVector v)
         {
             return MathF.Sqrt(v.X * v.X + v.Y * v.Y);
